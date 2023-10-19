@@ -1,18 +1,18 @@
-import { JQNErr, JQNOk } from "./main";
+import { Result, Ok, Err } from "ts-results";
 
-export function safeTryMap(
-  fn: (e: Element) => Element,
-  ok: JQNOk
-): JQNOk | JQNErr {
+export function safeTryMap<T, U = T>(
+  fn: (e: T) => U,
+  result: Result<T, Error>
+): Result<U, Error> {
   try {
-    return JQNOk(fn(ok.value));
+    return Ok(fn(result.unwrap()));
   } catch (error) {
     if (error instanceof Error) {
-      return JQNErr(error);
+      return Err(error);
     }
 
     const message = JSON.stringify(error);
 
-    return JQNErr(new Error(message));
+    return Err(new Error(message));
   }
 }

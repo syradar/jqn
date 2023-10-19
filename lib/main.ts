@@ -1,7 +1,7 @@
+import { Ok } from "ts-results";
 import { EventCache } from "./eventCache.js";
 import { safeTryMap } from "./safeTryMap.js";
-import { isElement, isString } from "./typeGuard.js";
-import { isNullish } from "./typeGuard.js";
+import { isElement, isNullish, isString } from "./typeGuard.js";
 
 const jqnSubscriptionCache = new EventCache();
 
@@ -19,7 +19,13 @@ class JQNOkImpl {
   }
 
   map<U extends Element>(fn: (el: Element) => U): JQNOk {
-    return safeTryMap(fn, this) as JQNOk;
+    const result = safeTryMap<Element, U>(fn, Ok(this.value));
+
+    if (result.err) {
+      return this;
+    }
+
+    return JQNOk(result.val);
   }
 
   on(event: string, fn: EventListener): JQNOk {
@@ -29,14 +35,11 @@ class JQNOkImpl {
     });
   }
 
-  /**
-   * @returns {JQNOk}
-   */
   subscribe(
     event: string,
     fn: EventListener,
     optionalSelector: string | null = null
-  ) {
+  ): JQNOk {
     const target =
       this.value.querySelector(optionalSelector ?? "") ?? this.value;
     jqnSubscriptionCache.add(target, event, fn);
@@ -85,6 +88,8 @@ class JQNErrImpl {
 
 export type JQNOk = JQNOkImpl;
 export type JQNErr = JQNErrImpl;
+
+export type JQNResult = JQNOk | JQNErr;
 
 export function JQNOk(value: Element) {
   return new JQNOkImpl(value);
