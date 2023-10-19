@@ -1,0 +1,25 @@
+{
+  "name": "jqn",
+  "version": "0.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "syntex@outlook.com",
+  "license": "MIT",
+  "devDependencies": {
+    "ts-results": "^3.3.0",
+    "typescript": "^5.2.2",
+    "vite": "^4.4.8",
+    "vitest": "^0.34.6"
+  },
+  "dependencies": {
+    "happy-dom": "^12.9.1"
+  }
+}
